@@ -1,14 +1,13 @@
 #pragma once
-#include "SceneObject.h"
 
 namespace MyEngine
 {
 	class BaseComponent;
-	class GameObject final : public SceneObject
+	class GameObject
 	{
 	public:
-		void Update(const float deltaTime) override;
-		void Render() const override;
+		void Update(const float deltaTime);
+		void Render() const;
 		
 
 		GameObject() = default;

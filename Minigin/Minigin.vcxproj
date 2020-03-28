@@ -196,12 +196,12 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="Engine\Components\BaseComponent.h" />
     <ClInclude Include="Engine\Components\Components.h" />
     <ClInclude Include="Engine\Graphics\Font.h" />
+    <ClInclude Include="Engine\Helpers\Command.h" />
     <ClInclude Include="Engine\Helpers\FixedSizeAllocator.h" />
     <ClInclude Include="Engine\Scene\GameObject.h" />
     <ClInclude Include="Engine\Managers\InputManager.h" />
     <ClInclude Include="Engine\Core\Minigin.h" />
     <ClInclude Include="Engine\Core\MiniginPCH.h" />
-    <ClInclude Include="Engine\Scene\SceneObject.h" />
     <ClInclude Include="Engine\Graphics\Renderer.h" />
     <ClInclude Include="Engine\Managers\ResourceManager.h" />
     <ClInclude Include="Engine\Scene\Scene.h" />
@@ -213,6 +213,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="Engine\Components\RenderComponent.h" />
     <ClInclude Include="Engine\Components\TextComponent.h" />
     <ClInclude Include="Engine\Components\FPSComponent.h" />
+    <ClInclude Include="Engine\Helpers\Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Graphics\Font.cpp" />
@@ -237,6 +238,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="Engine\Components\RenderComponent.cpp" />
     <ClCompile Include="Engine\Components\TextComponent.cpp" />
     <ClCompile Include="Engine\Components\FPSComponent.cpp" />
+    <ClCompile Include="Engine\Helpers\Logger.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

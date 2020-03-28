@@ -1,6 +1,7 @@
 #include "MiniginPCH.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include "../Managers/InputManager.h"
 
 using namespace MyEngine;
 
@@ -10,29 +11,30 @@ Scene::Scene(const std::string& name) : m_Name(name) {}
 
 Scene::~Scene() 
 {
-	for (SceneObject* pObject : m_Objects)
+	for (GameObject* pObject : m_Objects)
 	{
 		delete pObject;
 		pObject = nullptr;
 	}
 }
 
-void Scene::Add(SceneObject* pObject)
+void Scene::Add(GameObject* pObject)
 {
 	m_Objects.push_back(pObject);
 }
 
 void Scene::Update(const float deltaTime)
 {
-	for(SceneObject* pObject : m_Objects)
+	for(GameObject* pObject : m_Objects)
 	{
+		InputManager::GetInstance()->ProcessInput(pObject);
 		pObject->Update(deltaTime);
 	}
 }
 
 void Scene::Render() const
 {
-	for (const SceneObject* pObject : m_Objects)
+	for (const GameObject* pObject : m_Objects)
 	{
 		pObject->Render();
 	}

@@ -10,6 +10,7 @@
 #include "../Scene/GameObject.h"
 #include "../Scene/Scene.h"
 #include "../Components/Components.h"
+#include "../Helpers/Logger.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -19,7 +20,9 @@ void MyEngine::Minigin::Initialize()
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
+		
 	}
+	Logger::GetInstance()->Initialize();
 
 	m_Window = SDL_CreateWindow(
 		"Programming 4 assignment",
@@ -74,6 +77,10 @@ void MyEngine::Minigin::LoadGame() const
 	go->GetComponent<RenderComponent>()->AddTexture(go->GetComponent<TextComponent>()->GetTexture());
 	go->AddComponent(new FPSComponent());
 	scene.Add(go);
+
+	Logger::GetInstance()->LogInfo("testInfo");
+	Logger::GetInstance()->LogWarning("testWarning");
+	Logger::GetInstance()->LogError("testError");
 }
 
 void MyEngine::Minigin::Cleanup()
@@ -83,6 +90,7 @@ void MyEngine::Minigin::Cleanup()
 	SceneManager::Release();
 	InputManager::Release();
 	ResourceManager::Release();
+	Logger::Release();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();
@@ -108,7 +116,7 @@ void MyEngine::Minigin::Run()
 		{
 			const auto currentTime = high_resolution_clock::now();
 			float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
-			doContinue = input->ProcessInput();
+			doContinue = input->ProcessSDLEvents();
 			sceneManager->Update(deltaTime);
 			renderer->Render();
 			lastTime = currentTime;
