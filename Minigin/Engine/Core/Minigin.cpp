@@ -99,7 +99,7 @@ void MyEngine::Minigin::Cleanup()
 void MyEngine::Minigin::Run()
 {
 	Initialize();
-
+	float secondsPerFrame = MsPerFrame / 1000.f;
 	// tell the resource manager where he can find the game data
 	ResourceManager::GetInstance()->Init("../Data/");
 
@@ -112,14 +112,21 @@ void MyEngine::Minigin::Run()
 
 		bool doContinue = true;
 		auto lastTime = high_resolution_clock::now();
+		float lag = 0.f;
 		while (doContinue)
 		{
 			const auto currentTime = high_resolution_clock::now();
 			float deltaTime = std::chrono::duration<float>(currentTime - lastTime).count();
+			lastTime = currentTime;
+			lag += deltaTime;
 			doContinue = input->ProcessSDLEvents();
 			sceneManager->Update(deltaTime);
+			while (lag >= secondsPerFrame)
+			{
+				sceneManager->FixedUpdate(secondsPerFrame);
+				lag -= secondsPerFrame;
+			}
 			renderer->Render();
-			lastTime = currentTime;
 		}
 	}
 

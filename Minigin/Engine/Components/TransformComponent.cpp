@@ -4,6 +4,10 @@ MyEngine::TransformComponent::TransformComponent(Vector2 pos)
 	:m_Position{pos}
 {
 }
+void MyEngine::TransformComponent::FixedUpdate(const float fixedDeltaTime)
+{
+	UNREFERENCED_PARAMETER(fixedDeltaTime);
+}
 void MyEngine::TransformComponent::Update(const float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);

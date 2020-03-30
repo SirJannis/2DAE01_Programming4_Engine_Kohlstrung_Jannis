@@ -8,6 +8,7 @@ namespace MyEngine
 	{
 	public:
 		TransformComponent(Vector2 pos = {0.f, 0.f});
+		virtual void FixedUpdate(const float fixedDeltaTime) override;
 		virtual void Update(const float deltaTime) override;
 		virtual void Render() const override;
 

@@ -3,6 +3,11 @@
 #include "../Scene/GameObject.h"
 #include "TextComponent.h"
 
+void MyEngine::FPSComponent::FixedUpdate(const float fixedDeltaTime)
+{
+	UNREFERENCED_PARAMETER(fixedDeltaTime);
+}
+
 void MyEngine::FPSComponent::Update(const float deltaTime)
 {
 	m_DeltaTime += deltaTime;

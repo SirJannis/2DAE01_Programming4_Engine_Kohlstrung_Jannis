@@ -10,6 +10,7 @@ namespace MyEngine
 	public:
 		void Add(GameObject* pObject);
 
+		void FixedUpdate(const float fixedDeltaTime);
 		void Update(const float deltaTime);
 		void Render() const;
 

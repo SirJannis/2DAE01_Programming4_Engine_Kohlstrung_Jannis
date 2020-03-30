@@ -10,9 +10,9 @@
 #include "../Scene/GameObject.h"
 #include "RenderComponent.h"
 
-void MyEngine::TextComponent::Update(const float deltaTime)
+void MyEngine::TextComponent::FixedUpdate(const float fixedDeltaTime)
 {
-	UNREFERENCED_PARAMETER(deltaTime);
+	UNREFERENCED_PARAMETER(fixedDeltaTime);
 	if (m_NeedsUpdate)
 	{
 		const auto surf = TTF_RenderText_Blended(m_pFont->GetFont(), m_Text.c_str(), m_Color);
@@ -29,6 +29,11 @@ void MyEngine::TextComponent::Update(const float deltaTime)
 		m_pTexture->SetTexture(texture);
 		m_NeedsUpdate = false;
 	}
+}
+
+void MyEngine::TextComponent::Update(const float deltaTime)
+{
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 void MyEngine::TextComponent::Render() const

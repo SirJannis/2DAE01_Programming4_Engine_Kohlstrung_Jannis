@@ -2,6 +2,14 @@
 #include "SceneManager.h"
 #include "../Scene/Scene.h"
 
+void MyEngine::SceneManager::FixedUpdate(const float fixedDeltaTime)
+{
+	for (auto& scene : m_Scenes)
+	{
+		scene->FixedUpdate(fixedDeltaTime);
+	}
+}
+
 void MyEngine::SceneManager::Update(const float deltaTime)
 {
 	for(auto& scene : m_Scenes)

@@ -6,6 +6,7 @@ namespace MyEngine
 	class GameObject
 	{
 	public:
+		void FixedUpdate(const float fixedDeltaTime);
 		void Update(const float deltaTime);
 		void Render() const;
 		

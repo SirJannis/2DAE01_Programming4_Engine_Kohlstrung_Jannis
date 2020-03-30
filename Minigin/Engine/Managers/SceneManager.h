@@ -11,6 +11,7 @@ namespace MyEngine
 		~SceneManager();
 		Scene& CreateScene(const std::string& name);
 
+		void FixedUpdate(const float fixedDeltaTime);
 		void Update(const float deltaTime);
 		void Render();
 	private:

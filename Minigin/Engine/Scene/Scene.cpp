@@ -23,6 +23,14 @@ void Scene::Add(GameObject* pObject)
 	m_Objects.push_back(pObject);
 }
 
+void MyEngine::Scene::FixedUpdate(const float fixedDeltaTime)
+{
+	for (GameObject* pObject : m_Objects)
+	{
+		pObject->FixedUpdate(fixedDeltaTime);
+	}
+}
+
 void Scene::Update(const float deltaTime)
 {
 	for(GameObject* pObject : m_Objects)

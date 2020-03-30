@@ -22,6 +22,10 @@ MyEngine::RenderComponent::~RenderComponent()
 		}
 	}
 }
+void MyEngine::RenderComponent::FixedUpdate(const float fixedDeltaTime)
+{
+	UNREFERENCED_PARAMETER(fixedDeltaTime);
+}
 void MyEngine::RenderComponent::Update(const float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
