@@ -12,6 +12,11 @@
 #include "../Components/Components.h"
 #include "../Helpers/Logger.h"
 
+#if _DEBUG
+// ReSharper disable once CppUnusedIncludeDirective
+#include <vld.h>
+#endif
+
 using namespace std;
 using namespace std::chrono;
 
@@ -38,6 +43,8 @@ void MyEngine::Minigin::Initialize()
 	}
 
 	Renderer::GetInstance()->Init(m_Window);
+	// tell the resource manager where he can find the game data
+	ResourceManager::GetInstance()->Init("../Data/");
 }
 
 /**
@@ -98,12 +105,10 @@ void MyEngine::Minigin::Cleanup()
 
 void MyEngine::Minigin::Run()
 {
-	Initialize();
+	//Initialize();
 	float secondsPerFrame = MsPerFrame / 1000.f;
-	// tell the resource manager where he can find the game data
-	ResourceManager::GetInstance()->Init("../Data/");
 
-	LoadGame();
+	//LoadGame();
 
 	{
 		Renderer* renderer = Renderer::GetInstance();

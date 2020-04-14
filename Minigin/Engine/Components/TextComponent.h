@@ -5,6 +5,7 @@ namespace MyEngine
 {
 	class Font;
 	class Texture2D;
+	struct ColorRGBA;
 	class TextComponent final : public BaseComponent
 	{
 	public:

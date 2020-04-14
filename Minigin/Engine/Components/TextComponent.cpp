@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_pixels.h>
 
 #include "TextComponent.h"
 #include "../Graphics/Renderer.h"
@@ -9,6 +10,7 @@
 #include "../Graphics/Texture2D.h"
 #include "../Scene/GameObject.h"
 #include "RenderComponent.h"
+#include "../Helpers/Structs.h"
 
 void MyEngine::TextComponent::FixedUpdate(const float fixedDeltaTime)
 {
