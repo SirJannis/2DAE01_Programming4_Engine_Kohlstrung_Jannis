@@ -6,13 +6,13 @@ namespace MyEngine
 	class GameObject
 	{
 	public:
-		void FixedUpdate(const float fixedDeltaTime);
-		void Update(const float deltaTime);
+		void RootFixedUpdate(const float fixedDeltaTime);
+		void RootUpdate(const float deltaTime);
 		void Render() const;
 		
 
 		GameObject() = default;
-		~GameObject();
+		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
@@ -31,6 +31,10 @@ namespace MyEngine
 			}
 			return nullptr;
 		}
+	protected:
+		virtual void Update(const float deltaTime) { UNREFERENCED_PARAMETER(deltaTime); };
+		virtual void FixedUpdate(const float fixedDeltaTime) { UNREFERENCED_PARAMETER(fixedDeltaTime); };
+
 	private:
 		std::vector<BaseComponent*> m_Components;
 

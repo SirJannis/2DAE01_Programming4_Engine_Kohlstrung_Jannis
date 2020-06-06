@@ -1,6 +1,6 @@
 #include "MiniginPCH.h"
 #include "TransformComponent.h"
-MyEngine::TransformComponent::TransformComponent(Vector2 pos)
+MyEngine::TransformComponent::TransformComponent(glm::fvec2 pos)
 	:m_Position{pos}
 {
 }
@@ -17,7 +17,7 @@ void MyEngine::TransformComponent::Render() const
 {
 }
 
-const MyEngine::Vector2& MyEngine::TransformComponent::GetPosition() const
+const glm::fvec2& MyEngine::TransformComponent::GetPosition() const
 {
 	return m_Position;
 }

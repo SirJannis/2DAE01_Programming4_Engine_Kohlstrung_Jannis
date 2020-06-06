@@ -27,7 +27,7 @@ void MyEngine::Scene::FixedUpdate(const float fixedDeltaTime)
 {
 	for (GameObject* pObject : m_Objects)
 	{
-		pObject->FixedUpdate(fixedDeltaTime);
+		pObject->RootFixedUpdate(fixedDeltaTime);
 	}
 }
 
@@ -35,8 +35,7 @@ void Scene::Update(const float deltaTime)
 {
 	for(GameObject* pObject : m_Objects)
 	{
-		InputManager::GetInstance()->ProcessInput(pObject);
-		pObject->Update(deltaTime);
+		pObject->RootUpdate(deltaTime);
 	}
 }
 

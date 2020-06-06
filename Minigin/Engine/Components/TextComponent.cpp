@@ -10,7 +10,6 @@
 #include "../Graphics/Texture2D.h"
 #include "../Scene/GameObject.h"
 #include "RenderComponent.h"
-#include "../Helpers/Structs.h"
 
 void MyEngine::TextComponent::FixedUpdate(const float fixedDeltaTime)
 {

@@ -11,6 +11,7 @@
 #include "../Scene/Scene.h"
 #include "../Components/Components.h"
 #include "../Helpers/Logger.h"
+#include "../Managers/SoundManager.h"
 
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
@@ -20,7 +21,7 @@
 using namespace std;
 using namespace std::chrono;
 
-void MyEngine::Minigin::Initialize()
+void MyEngine::Minigin::Initialize(const std::string& dataPath)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
 	{
@@ -44,7 +45,8 @@ void MyEngine::Minigin::Initialize()
 
 	Renderer::GetInstance()->Init(m_Window);
 	// tell the resource manager where he can find the game data
-	ResourceManager::GetInstance()->Init("../Data/");
+	ResourceManager::GetInstance()->Init(dataPath + "Resources/");
+	SoundManager::GetInstance()->Init(dataPath + "Sounds/");
 }
 
 /**
@@ -98,6 +100,7 @@ void MyEngine::Minigin::Cleanup()
 	InputManager::Release();
 	ResourceManager::Release();
 	Logger::Release();
+	SoundManager::Release();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
 	SDL_Quit();
@@ -125,6 +128,7 @@ void MyEngine::Minigin::Run()
 			lastTime = currentTime;
 			lag += deltaTime;
 			doContinue = input->ProcessSDLEvents();
+			input->ProcessInput();
 			sceneManager->Update(deltaTime);
 			while (lag >= secondsPerFrame)
 			{

@@ -6,6 +6,12 @@
 #include "Engine/Scene/GameObject.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Helpers/Logger.h"
+#include "LevelParser.h"
+#include "Level.h"
+#include "Engine/Managers/InputManager.h"
+#include "Engine/Managers/SoundManager.h"
+#include "Engine/Helpers/SoundEffect.h"
+
 
 void LoadTestScene()
 {
@@ -46,12 +52,19 @@ void LoadTestScene()
 	Logger::GetInstance()->LogInfo("testInfo");
 	Logger::GetInstance()->LogWarning("testWarning");
 	Logger::GetInstance()->LogError("testError");
+
+	SoundEffect* sound = SoundManager::GetInstance()->LoadSoundEffect("ButtonClick.ogg");
+
+	Command* test = new Command({ [sound]() { Logger::GetInstance()->LogInfo("Executet Test Command!"); sound->Play(0); }, ButtonState::Released });
+	InputManager::GetInstance()->AddCommand(VK_LBUTTON, Hardware::Mouse, test);
 }
 
 
 int main(int, char* []) {
 	MyEngine::Minigin engine;
-	engine.Initialize();
+	engine.Initialize("../Data/");
+	std::vector<level> levels;
+	LevelParser::ParseFile("../Data/Resources/FixedLevelData.dat", levels);
 	LoadTestScene();
 	engine.Run();
 	return 0;

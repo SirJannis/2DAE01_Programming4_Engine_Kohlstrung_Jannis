@@ -7,74 +7,62 @@
 
 MyEngine::InputManager::~InputManager()
 {
-	for (std::pair<ControllerButton, std::vector<Command*>> pair : m_ControllerMappings)
+	for (std::pair<const int, std::vector<const Command*>>& pair : m_ControllerMappings)
 	{
-		for (Command* pCommand : pair.second)
+		for (const Command* pCommand : pair.second)
 		{
 			delete pCommand;
 		}
 	}
-	for (std::pair<KeyboardKey, std::vector<Command*>> pair : m_KeyBoardMappings)
+	for (std::pair<const int, std::vector<const Command*>>& pair : m_KeyBoardMappings)
 	{
-		for (Command* pCommand : pair.second)
+		for (const Command* pCommand : pair.second)
+		{
+			delete pCommand;
+		}
+	}
+	for (std::pair<const int, std::vector<const Command*>>& pair : m_MouseMappings)
+	{
+		for (const Command* pCommand : pair.second)
 		{
 			delete pCommand;
 		}
 	}
 }
 
-void MyEngine::InputManager::ProcessInput(GameObject* object)
+void MyEngine::InputManager::AddCommand(const int buttonCode, const Hardware hardware, const Command* command)
 {
-	for (std::pair<ControllerButton, std::vector<Command*>> pair : m_ControllerMappings)
+	switch (hardware)
 	{
-		if (IsPressed(pair.first))
-		{
-			for (Command* pCommand : pair.second)
-			{
-				pCommand->Execute(object);
-			}
-		}
-	}
-	for (std::pair<KeyboardKey, std::vector<Command*>> pair : m_KeyBoardMappings)
-	{
-		if (IsPressed(pair.first))
-		{
-			for (Command* pCommand : pair.second)
-			{
-				pCommand->Execute(object);
-
-			}
-		}
+	case MyEngine::Hardware::Keyboard:
+		AddCommand(buttonCode, command, m_KeyBoardMappings);
+		m_KeyBoardStates[buttonCode] = ButtonState::None;
+		break;
+	case MyEngine::Hardware::Controller:
+		AddCommand(buttonCode, command, m_ControllerMappings);
+		m_ControllerStates[buttonCode] = ButtonState::None;
+		break;
+	case MyEngine::Hardware::Mouse:
+		AddCommand(buttonCode, command, m_MouseMappings);
+		m_MouseStates[buttonCode] = ButtonState::None;
+		break;
+	default:
+		break;
 	}
 }
 
-void MyEngine::InputManager::AddCommand(ControllerButton button, Command* command)
+void MyEngine::InputManager::ProcessInput()
 {
-	for (Command* pCommand : m_ControllerMappings[button])
-	{
-		if (typeid(*pCommand) == typeid(*command))
-		{
-			Logger::GetInstance()->LogWarning("Command already added to button(created memory leak).");
-			return;
-		}
-	}
-	m_ControllerMappings[button].push_back(command);
+	UpdateStates(Hardware::Keyboard);
+	UpdateStates(Hardware::Controller);
+	UpdateStates(Hardware::Mouse);
+
+	ExecuteCommand(Hardware::Keyboard, m_KeyBoardMappings);
+	ExecuteCommand(Hardware::Controller, m_ControllerMappings);
+	ExecuteCommand(Hardware::Mouse, m_MouseMappings);
 }
 
-void MyEngine::InputManager::AddCommand(KeyboardKey key, Command* command)
-{
-	for (Command* pCommand : m_KeyBoardMappings[key])
-	{
-		if (typeid(*pCommand) == typeid(*command))
-		{
-			Logger::GetInstance()->LogWarning("Command already added to key.");
-			return;
-		}
-	}
-	m_KeyBoardMappings[key].push_back(command);
-}
-
-bool MyEngine::InputManager::ProcessSDLEvents()
+bool MyEngine::InputManager::ProcessSDLEvents() const
 {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
@@ -84,18 +72,116 @@ bool MyEngine::InputManager::ProcessSDLEvents()
 	}
 	return true;
 }
-
-bool MyEngine::InputManager::IsPressed(ControllerButton button) const
+bool MyEngine::InputManager::IsPressed(const int buttonCode, const Hardware hardWare)
 {
-	XINPUT_STATE* pState = new XINPUT_STATE();
-	XInputGetState(0, pState);
-	bool ret = pState->Gamepad.wButtons & DWORD(button);
-	delete pState;
-	return ret;
+	return IsButtonState(buttonCode, hardWare, ButtonState::Pressed);
 }
 
-bool MyEngine::InputManager::IsPressed(KeyboardKey key) const
+bool MyEngine::InputManager::IsReleased(const int buttonCode, const Hardware hardWare)
 {
-	return GetKeyState((int)key) & 0x8000;
+	return IsButtonState(buttonCode, hardWare, ButtonState::Released);
+}
+
+bool MyEngine::InputManager::IsDown(const int buttonCode, const Hardware hardWare)
+{
+	return IsButtonState(buttonCode, hardWare, ButtonState::Down);
+}
+
+bool MyEngine::InputManager::IsButtonState(const int buttonCode, const Hardware hardware, const ButtonState state)
+{
+	switch (hardware)
+	{
+	case MyEngine::Hardware::Keyboard:
+		return m_KeyBoardStates[buttonCode] == state;
+	case MyEngine::Hardware::Controller:
+		return m_ControllerStates[buttonCode] == state;
+	case MyEngine::Hardware::Mouse:
+		return m_MouseStates[buttonCode] == state;
+	default:
+		return false;
+	}
+}
+
+void MyEngine::InputManager::AddCommand(const int buttonCode, const Command* command, std::map<const int, std::vector<const Command*>>& mappings)
+{
+	for (const Command* pCommand : mappings[buttonCode])
+	{
+		if (pCommand == command)
+		{
+			Logger::GetInstance()->LogWarning("Command already added to button(created memory leak).");
+			return;
+		}
+	}
+	mappings[buttonCode].push_back(command);
+}
+
+void MyEngine::InputManager::ExecuteCommand(const Hardware hardware, const std::map<const int, std::vector<const Command*>>& mappings)
+{
+	for (const std::pair<const int, std::vector<const Command*>>& pair : mappings)
+	{
+		for (const Command* pCommand : pair.second)
+		{
+			if (IsButtonState(pair.first, hardware, pCommand->State))
+			{
+				pCommand->Action();
+			}
+		}
+	}
+}
+
+void MyEngine::InputManager::UpdateStates(const Hardware hardware)
+{
+	XINPUT_STATE* pState{};
+	WORD buttons{};
+	switch (hardware)
+	{
+	case MyEngine::Hardware::Keyboard:
+		for (std::pair<const int, ButtonState>& pair : m_KeyBoardStates)
+		{
+			UpdateState(GetKeyState(pair.first) & 0x8000, pair);
+		}
+		break;
+	case MyEngine::Hardware::Controller:
+		pState = new XINPUT_STATE();
+		XInputGetState(1, pState);
+		buttons = pState->Gamepad.wButtons;
+		delete pState;
+		for (std::pair<const int, ButtonState>& pair : m_ControllerStates)
+		{
+			UpdateState(buttons & WORD(pair.first), pair);
+		}
+		break;
+	case MyEngine::Hardware::Mouse:
+		for (std::pair<const int, ButtonState>& pair : m_MouseStates)
+		{
+			UpdateState(GetKeyState(pair.first) & 0x80, pair);
+		}
+		break;
+	default:
+		break;
+	}
+
+}
+
+void MyEngine::InputManager::UpdateState(const bool down, std::pair<const int, ButtonState>& pair)
+{
+	if (down)
+	{
+		if (pair.second == ButtonState::None || pair.second == ButtonState::Pressed)
+		{
+			pair.second = ButtonState(int(pair.second) + 1);
+		}
+		if (pair.second == ButtonState::Released)
+		{
+			pair.second = ButtonState::Pressed;
+		}
+	}
+	else
+	{
+		if (pair.second == ButtonState::Down || pair.second == ButtonState::Released)
+		{
+			pair.second = ButtonState((int(pair.second) + 1) % 4);
+		}
+	}
 }
 

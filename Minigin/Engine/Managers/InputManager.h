@@ -1,46 +1,58 @@
 #pragma once
 #include <XInput.h>
 #include "../Helpers/Singleton.h"
-#include "../Helpers/Command.h"
 #include <map>
+#include <functional>
 
 namespace MyEngine
 {
-	enum class ControllerButton
+	enum class ButtonState
 	{
-		ButtonA = XINPUT_GAMEPAD_A,
-		ButtonB = XINPUT_GAMEPAD_B,
-		ButtonX = XINPUT_GAMEPAD_X,
-		ButtonY = XINPUT_GAMEPAD_Y,
+		None,
+		Pressed,
+		Down,
+		Released
+	};
+	enum class Hardware
+	{
+		Keyboard,
+		Controller,
+		Mouse
 	};
 
-	enum class KeyboardKey
+	class GameObject;
+	struct Command
 	{
-		KeyUp = VK_UP,
-		KeyDown = VK_DOWN,
-		KeyLeft = VK_LEFT,
-		KeyRight = VK_RIGHT,
-		KeyW = 'W',
-		KeyS = 'S',
-		KeyA = 'A',
-		KeyD = 'D',
-		KeyShift = VK_SHIFT,
-		KeyControl = VK_CONTROL,
-		KeySpace = VK_SPACE
+		std::function<void()> Action;
+		ButtonState State;
 	};
+
+
 
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
 		~InputManager();
-		void AddCommand(ControllerButton button, Command* command);
-		void AddCommand(KeyboardKey key, Command* command);
-		bool ProcessSDLEvents();
-		void ProcessInput(GameObject* object);
-		bool IsPressed(ControllerButton button) const;
-		bool IsPressed(KeyboardKey key) const;
+		void AddCommand(const int buttonCode,const Hardware hardware,const Command* command);
+		bool ProcessSDLEvents() const;
+		void ProcessInput();
+		bool IsPressed(const int buttonCode,const Hardware hardWare);
+		bool IsDown(const int buttonCode,const Hardware hardWare);
+		bool IsReleased(const int buttonCode,const Hardware hardWare);
+		bool IsButtonState(const int buttonCode, const Hardware hardware, const ButtonState state);
 	private:
-		std::map<ControllerButton, std::vector<Command*>> m_ControllerMappings;
-		std::map<KeyboardKey, std::vector<Command*>> m_KeyBoardMappings;
+		std::map<const int, std::vector<const Command*>> m_ControllerMappings;
+		std::map<const int, std::vector<const Command*>> m_KeyBoardMappings;
+		std::map<const int, std::vector<const Command*>> m_MouseMappings;
+
+		std::map<const int, ButtonState> m_ControllerStates;
+		std::map<const int, ButtonState> m_KeyBoardStates;
+		std::map<const int, ButtonState> m_MouseStates;
+
+		void AddCommand(const int buttonCode, const Command* command, std::map<const int, std::vector<const Command*>>& mappings);
+		void ExecuteCommand(const Hardware hardware, const std::map<const int, std::vector<const Command*>>& mappings);
+		void UpdateStates(const Hardware hardware);
+
+		void UpdateState(const bool down, std::pair<const int, ButtonState>& pair);
 	};
 }

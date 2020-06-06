@@ -4,7 +4,6 @@
 #include "../Graphics/Texture2D.h"
 #include <exception>
 #include "../Graphics/Renderer.h"
-#include "../Helpers/Structs.h"
 #include "../Scene/GameObject.h"
 MyEngine::RenderComponent::RenderComponent(const size_t maxTextures)
 	:m_Textures{ maxTextures }
@@ -35,7 +34,7 @@ void MyEngine::RenderComponent::Render() const
 {
 	for (size_t i{}; i < m_NrTextures; i++)
 	{
-		Vector2 pos = m_pGameObject->GetComponent<TransformComponent>()->GetPosition();
+		glm::fvec2 pos = m_pGameObject->GetComponent<TransformComponent>()->GetPosition();
 		Renderer::GetInstance()->RenderTexture(*m_Textures[i], pos.x, pos.y);
 	}
 }

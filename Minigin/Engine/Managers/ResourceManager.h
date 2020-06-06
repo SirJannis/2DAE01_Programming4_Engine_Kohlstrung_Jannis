@@ -3,6 +3,9 @@
 
 namespace MyEngine
 {
+	//Todo: Rework this to hold the pointers and delete them when it gets destroyed
+	// If loading something in that already exists then return that
+	// 1 options is struct with font* and path and another struct with texture* and path
 	class Texture2D;
 	class Font;
 	class ResourceManager final : public Singleton<ResourceManager>

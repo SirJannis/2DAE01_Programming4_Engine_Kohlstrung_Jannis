@@ -3,6 +3,7 @@
 #include "../Managers/ResourceManager.h"
 #include "../Graphics/Renderer.h"
 #include "../Components/BaseComponent.h"
+
 #include <exception>
 
 MyEngine::GameObject::~GameObject()
@@ -14,27 +15,29 @@ MyEngine::GameObject::~GameObject()
 	}
 }
 
-void MyEngine::GameObject::FixedUpdate(const float fixedDeltaTime)
+void MyEngine::GameObject::RootFixedUpdate(const float fixedDeltaTime)
 {
 	for (BaseComponent* pComp : m_Components)
 	{
-		pComp->FixedUpdate(fixedDeltaTime);
+			pComp->FixedUpdate(fixedDeltaTime);
 	}
+	FixedUpdate(fixedDeltaTime);
 }
 
-void MyEngine::GameObject::Update(const float deltaTime)
-{ 
+void MyEngine::GameObject::RootUpdate(const float deltaTime)
+{
 	for (BaseComponent* pComp : m_Components)
 	{
-		pComp->Update(deltaTime);
+			pComp->Update(deltaTime);
 	}
+	Update(deltaTime);
 }
 
 void MyEngine::GameObject::Render() const
 {
 	for (BaseComponent* pComp : m_Components)
 	{
-		pComp->Render();
+			pComp->Render();
 	}
 }
 

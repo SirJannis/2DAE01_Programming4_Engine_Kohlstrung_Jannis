@@ -20,4 +20,3 @@ namespace MyEngine
 		size_t m_NrTextures;
 	};
 }
-
