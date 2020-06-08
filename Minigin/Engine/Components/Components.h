@@ -4,3 +4,4 @@
 #include "TransformComponent.h"
 #include "FPSComponent.h"
 #include "AnimatedRenderComponent.h"
+#include "PhysicsComponent.h"

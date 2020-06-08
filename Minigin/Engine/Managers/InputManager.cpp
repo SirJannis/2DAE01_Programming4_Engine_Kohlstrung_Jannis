@@ -30,6 +30,11 @@ MyEngine::InputManager::~InputManager()
 	}
 }
 
+void MyEngine::InputManager::Init(SDL_Window* pWindow)
+{
+	m_pWindow = pWindow;
+}
+
 void MyEngine::InputManager::AddCommand(const int buttonCode, const Hardware hardware, const Command* command)
 {
 	switch (hardware)
@@ -53,6 +58,8 @@ void MyEngine::InputManager::AddCommand(const int buttonCode, const Hardware har
 
 void MyEngine::InputManager::ProcessInput()
 {
+	if (!(SDL_GetWindowFlags(m_pWindow) & (SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS)))
+		return;
 	UpdateStates(Hardware::Keyboard);
 	UpdateStates(Hardware::Controller);
 	UpdateStates(Hardware::Mouse);

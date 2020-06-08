@@ -8,6 +8,7 @@ namespace MyEngine
 	class SoundManager final : public Singleton<SoundManager>
 	{
 	public:
+		SoundManager() = default;
 		~SoundManager();
 		void Init(const std::string& dataPath);
 		SoundEffect* LoadSoundEffect(const std::string& file);

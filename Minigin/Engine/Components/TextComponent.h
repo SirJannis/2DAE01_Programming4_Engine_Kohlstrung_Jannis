@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseComponent.h"
 #include <SDL_pixels.h>
+//Todo: Make the TextComponent draw itself
 namespace MyEngine
 {
 	class Font;
@@ -10,9 +11,9 @@ namespace MyEngine
 	{
 	public:
 
-		virtual void FixedUpdate(const float fixedDeltaTime) override;
-		virtual void Update(const float deltaTime) override;
-		virtual void Render() const override;
+		void FixedUpdate(const float fixedDeltaTime) override;
+		void Update(const float deltaTime) override;
+		void Render() const override;
 
 		TextComponent(const std::string& text, Font* pFont, SDL_Color color);
 		~TextComponent();

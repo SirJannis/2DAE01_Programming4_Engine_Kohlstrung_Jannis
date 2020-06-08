@@ -35,7 +35,7 @@ void MyEngine::RenderComponent::Render() const
 	for (size_t i{}; i < m_NrTextures; i++)
 	{
 		glm::fvec2 pos = m_pGameObject->GetComponent<TransformComponent>()->GetPosition();
-		Renderer::GetInstance()->RenderTexture(*m_Textures[i], pos.x, pos.y);
+		Renderer::GetInstance()->RenderTexture(*m_Textures[i], pos.x,pos.y);
 	}
 }
 

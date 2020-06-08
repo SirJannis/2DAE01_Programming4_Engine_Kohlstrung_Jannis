@@ -12,6 +12,7 @@
 #include "../Components/Components.h"
 #include "../Helpers/Logger.h"
 #include "../Managers/SoundManager.h"
+#include "../Managers/PhysicsManager.h"
 
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
@@ -21,32 +22,37 @@
 using namespace std;
 using namespace std::chrono;
 
-void MyEngine::Minigin::Initialize(const std::string& dataPath)
+const float MyEngine::Minigin::SecondsPerFrame = .016f;
+
+void MyEngine::Minigin::Initialize(const std::string& dataPath, const std::string& windowTitle, int windowWidth, int windowHeigth, const float ppm)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 		
 	}
-	Logger::GetInstance()->Initialize();
+	Logger::GetInstance()->Init();
 
-	m_Window = SDL_CreateWindow(
-		"Programming 4 assignment",
+	m_pWindow = SDL_CreateWindow(
+		windowTitle.c_str(),
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		640,
-		480,
+		windowWidth,
+		windowHeigth,
 		SDL_WINDOW_OPENGL
 	);
-	if (m_Window == nullptr) 
+	if (m_pWindow == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance()->Init(m_Window);
+	InputManager::GetInstance()->Init(m_pWindow);
+	Renderer::GetInstance()->Init(m_pWindow, {0,0,0,255});
 	// tell the resource manager where he can find the game data
 	ResourceManager::GetInstance()->Init(dataPath + "Resources/");
 	SoundManager::GetInstance()->Init(dataPath + "Sounds/");
+	b2Vec2 gravity{ 0.f, -9.81f };
+	PhysicsManager::GetInstance()->Init(gravity, 8, 3, ppm);
 }
 
 /**
@@ -101,15 +107,15 @@ void MyEngine::Minigin::Cleanup()
 	ResourceManager::Release();
 	Logger::Release();
 	SoundManager::Release();
-	SDL_DestroyWindow(m_Window);
-	m_Window = nullptr;
+	PhysicsManager::Release();
+	SDL_DestroyWindow(m_pWindow);
+	m_pWindow = nullptr;
 	SDL_Quit();
 }
 
 void MyEngine::Minigin::Run()
 {
 	//Initialize();
-	float secondsPerFrame = MsPerFrame / 1000.f;
 
 	//LoadGame();
 
@@ -117,6 +123,7 @@ void MyEngine::Minigin::Run()
 		Renderer* renderer = Renderer::GetInstance();
 		SceneManager* sceneManager = SceneManager::GetInstance();
 		InputManager* input = InputManager::GetInstance();
+		PhysicsManager* physics = PhysicsManager::GetInstance();
 
 		bool doContinue = true;
 		auto lastTime = high_resolution_clock::now();
@@ -130,10 +137,11 @@ void MyEngine::Minigin::Run()
 			doContinue = input->ProcessSDLEvents();
 			input->ProcessInput();
 			sceneManager->Update(deltaTime);
-			while (lag >= secondsPerFrame)
+			while (lag >= SecondsPerFrame)
 			{
-				sceneManager->FixedUpdate(secondsPerFrame);
-				lag -= secondsPerFrame;
+				sceneManager->FixedUpdate(SecondsPerFrame);
+				physics->FixedUpdate(SecondsPerFrame);
+				lag -= SecondsPerFrame;
 			}
 			renderer->Render();
 		}

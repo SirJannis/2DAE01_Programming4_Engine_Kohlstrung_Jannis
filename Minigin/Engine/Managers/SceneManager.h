@@ -7,6 +7,12 @@ namespace MyEngine
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
+		//Instead of createscene, have addscene
+		//Setactivescene that passes a name
+		//removescene to remove a scene by name and deletes
+		//removescene a vector of names to remove and delete with failchecks
+		//FixedUpdate, Update and Render only on the active scene
+		//Active Scene Member variable
 		SceneManager() = default;
 		~SceneManager();
 		Scene& CreateScene(const std::string& name);

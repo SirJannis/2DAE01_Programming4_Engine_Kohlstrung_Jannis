@@ -4,6 +4,7 @@
 #include <map>
 #include <functional>
 
+struct SDL_Window;
 namespace MyEngine
 {
 	enum class ButtonState
@@ -28,11 +29,12 @@ namespace MyEngine
 	};
 
 
-
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
+		InputManager() = default;
 		~InputManager();
+		void Init(SDL_Window* pWindow);
 		void AddCommand(const int buttonCode,const Hardware hardware,const Command* command);
 		bool ProcessSDLEvents() const;
 		void ProcessInput();
@@ -54,5 +56,7 @@ namespace MyEngine
 		void UpdateStates(const Hardware hardware);
 
 		void UpdateState(const bool down, std::pair<const int, ButtonState>& pair);
+
+		SDL_Window* m_pWindow;
 	};
 }

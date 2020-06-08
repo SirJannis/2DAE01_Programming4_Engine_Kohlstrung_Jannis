@@ -3,6 +3,7 @@
 #include <vector>
 namespace MyEngine
 {
+	//Think about if i need the animated rendercomponent or if it can be done otherwise
 	class Texture2D;
 	class AnimatedRenderComponent final : public BaseComponent
 	{
@@ -10,9 +11,9 @@ namespace MyEngine
 		AnimatedRenderComponent(const size_t maxTextures);
 		~AnimatedRenderComponent();
 
-		virtual void FixedUpdate(const float fixedDeltaTime) override;
-		virtual void Update(const float deltaTime) override;
-		virtual void Render() const override;
+		void FixedUpdate(const float fixedDeltaTime) override;
+		void Update(const float deltaTime) override;
+		void Render() const override;
 
 		void AddTexture(Texture2D* text);
 	private:

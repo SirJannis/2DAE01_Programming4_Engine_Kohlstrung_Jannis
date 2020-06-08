@@ -5,9 +5,9 @@ namespace MyEngine
 	class FPSComponent final : public BaseComponent
 	{
 	public:
-		virtual void FixedUpdate(const float fixedDeltaTime) override;
-		virtual void Update(const float deltaTime) override;
-		virtual void Render() const override;
+		void FixedUpdate(const float fixedDeltaTime) override;
+		void Update(const float deltaTime) override;
+		void Render() const override;
 
 	private:
 		float m_DeltaTime;

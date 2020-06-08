@@ -5,6 +5,8 @@ namespace MyEngine
 	/**
 	 * Simple RAII wrapper for an SDL_Texture
 	 */
+	//Make a Wrapper around the texture2d animatedtexture
+	//Drawwidth, drawheight, currentframe, isanimated, pivot, frametime(how long 1 frame is), currenttime, rows & columns
 	class Texture2D
 	{
 	public:

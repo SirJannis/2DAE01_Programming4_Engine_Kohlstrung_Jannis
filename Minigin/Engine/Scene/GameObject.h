@@ -3,7 +3,7 @@
 namespace MyEngine
 {
 	class BaseComponent;
-	class GameObject
+	class GameObject final
 	{
 	public:
 		void RootFixedUpdate(const float fixedDeltaTime);

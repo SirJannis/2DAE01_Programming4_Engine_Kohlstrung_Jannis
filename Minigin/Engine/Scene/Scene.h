@@ -9,6 +9,8 @@ namespace MyEngine
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void Add(GameObject* pObject);
+		//Add scene activated and scene deactivated
+		//Levels unload all other levels known and main menu as well
 
 		void FixedUpdate(const float fixedDeltaTime);
 		void Update(const float deltaTime);
@@ -22,7 +24,6 @@ namespace MyEngine
 
 	private: 
 		explicit Scene(const std::string& name);
-
 		std::string m_Name;
 		std::vector<GameObject*> m_Objects{};
 

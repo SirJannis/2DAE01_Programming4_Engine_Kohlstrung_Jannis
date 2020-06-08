@@ -4,7 +4,7 @@
 #include <processenv.h>
 #include <iostream>
 
-void MyEngine::Logger::Initialize()
+void MyEngine::Logger::Init()
 {
 	//Source for this Initialize: OverlordEngine Logger.cpp
 #if defined(DEBUG) | defined(_DEBUG)
