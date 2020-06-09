@@ -3,8 +3,7 @@
 
 MyEngine::PhysicsManager::~PhysicsManager()
 {
-	delete m_pWorld;
-	m_pWorld = nullptr;
+	SafeDelete(m_pWorld);
 }
 
 void MyEngine::PhysicsManager::Init(const b2Vec2& gravity, const int32 velocityIter, const int32 positionIter, const float ppm)

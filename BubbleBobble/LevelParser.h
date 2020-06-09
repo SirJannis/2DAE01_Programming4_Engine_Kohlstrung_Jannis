@@ -5,52 +5,86 @@
 #include <fstream>
 #include "Engine/Core/MiniginPCH.h"
 #include "Engine/Helpers/Logger.h"
-typedef std::vector<bool> line;
-typedef std::vector<line> level;
+#include "Level.h"
 
 using namespace MyEngine;
 class LevelParser final
 {
 public:
-	static void ParseFile(const std::string& path, std::vector<level>& levels)
+	static void ParseFile(const std::string& levelPath, const std::string& enemyPath, std::vector<level>& levels)
 	{
 		UNREFERENCED_PARAMETER(levels);
 		std::regex fileTypeRegex{ ".+\\.dat$" };
 
-		std::ifstream file;
+		std::ifstream levelFile;
+		std::ifstream enemyFile;
 		char c;
 
-		if (!std::regex_match(path, fileTypeRegex))
+		if (!std::regex_match(levelPath, fileTypeRegex))
 		{
-			Logger::GetInstance()->LogError("File is not a .dat file!");
+			Logger::GetInstance()->LogError("LevelData file is not a .dat file!");
 			return;
 		}
 
-		file.open(path, std::ios::binary);
-		if (!file.is_open())
+		if (!std::regex_match(enemyPath, fileTypeRegex))
 		{
-			Logger::GetInstance()->LogError("File [" + path + "] could not be opened!");
+			Logger::GetInstance()->LogError("EnemyData file is not a .dat file!");
 			return;
 		}
-		while (!file.eof())
+
+		levelFile.open(levelPath, std::ios::binary);
+		if (!levelFile.is_open())
+		{
+			Logger::GetInstance()->LogError("File [" + levelPath + "] could not be opened!");
+			return;
+		}
+		enemyFile.open(enemyPath, std::ios::binary);
+		if (!levelFile.is_open())
+		{
+			Logger::GetInstance()->LogError("File [" + enemyPath + "] could not be opened!");
+			return;
+		}
+		for (int levelCounter{};levelCounter <100;levelCounter++)
 		{
 			levels.push_back(level());
 			level& currentLevel = levels.back();
 			for (size_t lineCounter{}; lineCounter < 25; lineCounter++)
 			{
-				currentLevel.push_back(line());
-				line& currentLine = currentLevel.back();
+				currentLevel.first.push_back(line());
+				line& currentLine = currentLevel.first.back();
 				for (size_t charCounter{}; charCounter < 4; charCounter++)
 				{
-					file.read((char*)&c, sizeof(char));
+					levelFile.read((char*)&c, sizeof(char));
+					int number = 0b10000000;
 					for (size_t cellCounter{}; cellCounter < 8; cellCounter++)
 					{
-						currentLine.push_back(c & 1);
-						c = c >> 1;
+
+						currentLine.push_back(c & number);
+						number = number >> 1;
 					}
 				}
 			}
+			char first;
+			enemyFile.read((char*)&first, sizeof(char));
+			while (first != 0)
+			{
+				char second;
+				char third;
+				enemyFile.read((char*)&second, sizeof(char));
+				enemyFile.read((char*)&third, sizeof(char));
+
+				currentLevel.second.push_back(Enemy());
+				currentLevel.second.back().Type = EnemyType( first & 0b00000111);
+				currentLevel.second.back().Col = int((first >> 3) & 0b00011111);
+
+				currentLevel.second.back().Row = int((second >> 3) & 0b00011111);
+				currentLevel.second.back().Delay = 0.017f * int((third << 1) & 0b00111111);
+
+				enemyFile.read((char*)&first, sizeof(char));
+			}
 		}
-		file.close();
+		levelFile.close();
+		enemyFile.close();
+		levels.pop_back();
 	}
 };

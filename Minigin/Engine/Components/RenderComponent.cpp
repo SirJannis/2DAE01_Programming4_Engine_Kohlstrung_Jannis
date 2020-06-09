@@ -14,11 +14,7 @@ MyEngine::RenderComponent::~RenderComponent()
 {
 	for (Texture2D* pTexture : m_Textures)
 	{
-		if (pTexture)
-		{
-			delete pTexture;
-			pTexture = nullptr;
-		}
+		SafeDelete(pTexture);
 	}
 }
 void MyEngine::RenderComponent::FixedUpdate(const float fixedDeltaTime)

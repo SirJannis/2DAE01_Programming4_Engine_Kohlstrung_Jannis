@@ -19,16 +19,11 @@ namespace MyEngine
 		void Update(const float deltaTime) override;
 		void Render() const override;
 
-		const bool IsTrigger() { return m_IsTrigger; }
-		void SetIsTrigger(bool value);
-
 
 		bool IsOverlapping(const PhysicsComponent* other) const;
 	private:
 		friend class TransformComponent;
 		b2Body* m_pBody;
-		bool m_IsTrigger;
-		unsigned short m_OldMaskBits;
 	};
 }
 

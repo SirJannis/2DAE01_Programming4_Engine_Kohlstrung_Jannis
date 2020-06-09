@@ -65,7 +65,8 @@ void LoadTestScene()
 	SoundEffect* sound = SoundManager::GetInstance()->LoadSoundEffect("ButtonClick.ogg");
 
 	Command* test = new Command({ [sound]() { Logger::GetInstance()->LogInfo("Executet Test Command!"); sound->Play(0); }, ButtonState::Released });
-	InputManager::GetInstance()->AddCommand(VK_LBUTTON, Hardware::Mouse, test);
+	InputManager::GetInstance()->AddCommand(XINPUT_GAMEPAD_A, Hardware::Controller, test, 0);
+
 
 	PhysicsManager::GetInstance()->SetShouldDebugDraw(true);
 	PhysicsManager::GetInstance()->SetDebugDrawColor({255,0,255,255});
@@ -77,47 +78,7 @@ int main(int, char* []) {
 	MyEngine::Minigin engine;
 	engine.Initialize("../Data/", "BubbleBobble", 640, 500, 20.f);
 	std::vector<level> levels;
-	LevelParser::ParseFile("../Data/Resources/FixedLevelData.dat", levels);
-
-	////Box2D test
-
-	//b2Vec2 testgravity{ 0.f, -9.81f };
-	//b2World world(testgravity);
-
-	//b2BodyDef groundBodyDef;
-	//groundBodyDef.position.Set(320.f, -10.f);
-	//b2Body* pGroundBody = world.CreateBody(&groundBodyDef);
-
-	//b2PolygonShape groundBox;
-	//groundBox.SetAsBox(320.f, 10.f);
-
-	//pGroundBody->CreateFixture(&groundBox, .0f);
-
-	//b2BodyDef bodyDef;
-	//bodyDef.type = b2_dynamicBody;
-	//bodyDef.position.Set(0.0f, 4.0f);
-	//b2Body* body = world.CreateBody(&bodyDef);
-
-	//b2PolygonShape dynamicBox;
-	//dynamicBox.SetAsBox(1.0f, 1.0f);
-
-	//b2FixtureDef fixtureDef;
-	//fixtureDef.shape = &dynamicBox;
-	//fixtureDef.density = 1.0f;
-	//fixtureDef.friction = 0.3f;
-
-	//body->CreateFixture(&fixtureDef);
-
-	//int32 velocityIterations = 6;
-	//int32 positionIterations = 2;
-
-	//for (int32 i = 0; i < 60; ++i)
-	//{
-	//	world.Step(engine.SecondsPerFrame, velocityIterations, positionIterations);
-	//	b2Vec2 position = body->GetPosition();
-	//	float angle = body->GetAngle();
-	//	printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-	//}
+	LevelParser::ParseFile("../Data/Resources/SeperatedLevelData.dat", "../Data/Resources/SeperatedEnemyData.dat", levels);
 
 	LoadTestScene();
 	engine.Run();

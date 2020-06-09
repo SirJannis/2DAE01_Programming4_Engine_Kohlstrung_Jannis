@@ -10,8 +10,7 @@ MyEngine::GameObject::~GameObject()
 {
 	for (BaseComponent* pComp : m_Components)
 	{
-		delete pComp;
-		pComp = nullptr;
+		SafeDelete(pComp);
 	}
 }
 

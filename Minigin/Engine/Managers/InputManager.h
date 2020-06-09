@@ -35,27 +35,27 @@ namespace MyEngine
 		InputManager() = default;
 		~InputManager();
 		void Init(SDL_Window* pWindow);
-		void AddCommand(const int buttonCode,const Hardware hardware,const Command* command);
+		void AddCommand(const int buttonCode,const Hardware hardware,const Command* command, int id = 0);
 		bool ProcessSDLEvents() const;
 		void ProcessInput();
-		bool IsPressed(const int buttonCode,const Hardware hardWare);
-		bool IsDown(const int buttonCode,const Hardware hardWare);
-		bool IsReleased(const int buttonCode,const Hardware hardWare);
-		bool IsButtonState(const int buttonCode, const Hardware hardware, const ButtonState state);
+		bool IsPressed(const int buttonCode,const Hardware hardWare, int id = 0);
+		bool IsDown(const int buttonCode,const Hardware hardWare, int id = 0);
+		bool IsReleased(const int buttonCode,const Hardware hardWare, int id = 0);
+		bool IsButtonState(const int buttonCode, const Hardware hardware, const ButtonState state, int id = 0);
 	private:
-		std::map<const int, std::vector<const Command*>> m_ControllerMappings;
-		std::map<const int, std::vector<const Command*>> m_KeyBoardMappings;
-		std::map<const int, std::vector<const Command*>> m_MouseMappings;
+		std::map<std::pair<const int, const int>, std::vector<const Command*>> m_ControllerMappings;
+		std::map<std::pair<const int, const int>, std::vector<const Command*>> m_KeyBoardMappings;
+		std::map<std::pair<const int, const int>, std::vector<const Command*>> m_MouseMappings;
 
-		std::map<const int, ButtonState> m_ControllerStates;
-		std::map<const int, ButtonState> m_KeyBoardStates;
-		std::map<const int, ButtonState> m_MouseStates;
+		std::map<std::pair<const int, const int>, ButtonState> m_ControllerStates;
+		std::map<std::pair<const int, const int>, ButtonState> m_KeyBoardStates;
+		std::map<std::pair<const int, const int>, ButtonState> m_MouseStates;
 
-		void AddCommand(const int buttonCode, const Command* command, std::map<const int, std::vector<const Command*>>& mappings);
-		void ExecuteCommand(const Hardware hardware, const std::map<const int, std::vector<const Command*>>& mappings);
+		void AddCommand(const int buttonCode, const Command* command, std::map<std::pair<const int, const int>, std::vector<const Command*>>& mappings, int id);
+		void ExecuteCommand(const Hardware hardware, const std::map<std::pair<const int, const int>, std::vector<const Command*>>& mappings);
 		void UpdateStates(const Hardware hardware);
 
-		void UpdateState(const bool down, std::pair<const int, ButtonState>& pair);
+		void UpdateState(const bool down,std::pair<const std::pair<const int, const int>, ButtonState>& pair);
 
 		SDL_Window* m_pWindow;
 	};

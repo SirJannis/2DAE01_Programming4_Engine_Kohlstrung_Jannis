@@ -61,11 +61,7 @@ MyEngine::TextComponent::TextComponent(const std::string& text, Font* pFont, SDL
 
 MyEngine::TextComponent::~TextComponent()
 {
-	if (m_pFont)
-	{
-		delete m_pFont;
-		m_pFont = nullptr;
-	}
+	SafeDelete(m_pFont);
 }
 
 void MyEngine::TextComponent::SetText(const std::string& text)

@@ -7,25 +7,25 @@
 
 MyEngine::InputManager::~InputManager()
 {
-	for (std::pair<const int, std::vector<const Command*>>& pair : m_ControllerMappings)
+	for (const std::pair<std::pair<const int, const int>, std::vector<const Command*>>& pair : m_ControllerMappings)
 	{
 		for (const Command* pCommand : pair.second)
 		{
-			delete pCommand;
+			SafeDelete(pCommand);
 		}
 	}
-	for (std::pair<const int, std::vector<const Command*>>& pair : m_KeyBoardMappings)
+	for (const std::pair<std::pair<const int, const int>, std::vector<const Command*>>& pair : m_KeyBoardMappings)
 	{
 		for (const Command* pCommand : pair.second)
 		{
-			delete pCommand;
+			SafeDelete(pCommand);
 		}
 	}
-	for (std::pair<const int, std::vector<const Command*>>& pair : m_MouseMappings)
+	for (const std::pair<std::pair<const int, const int>, std::vector<const Command*>>& pair : m_MouseMappings)
 	{
 		for (const Command* pCommand : pair.second)
 		{
-			delete pCommand;
+			SafeDelete(pCommand);
 		}
 	}
 }
@@ -35,21 +35,21 @@ void MyEngine::InputManager::Init(SDL_Window* pWindow)
 	m_pWindow = pWindow;
 }
 
-void MyEngine::InputManager::AddCommand(const int buttonCode, const Hardware hardware, const Command* command)
+void MyEngine::InputManager::AddCommand(const int buttonCode, const Hardware hardware, const Command* command, int id)
 {
 	switch (hardware)
 	{
 	case MyEngine::Hardware::Keyboard:
-		AddCommand(buttonCode, command, m_KeyBoardMappings);
-		m_KeyBoardStates[buttonCode] = ButtonState::None;
+		AddCommand(buttonCode, command, m_KeyBoardMappings, id);
+		m_KeyBoardStates[{buttonCode, id}] = ButtonState::None;
 		break;
 	case MyEngine::Hardware::Controller:
-		AddCommand(buttonCode, command, m_ControllerMappings);
-		m_ControllerStates[buttonCode] = ButtonState::None;
+		AddCommand(buttonCode, command, m_ControllerMappings, id);
+		m_ControllerStates[{buttonCode, id}] = ButtonState::None;
 		break;
 	case MyEngine::Hardware::Mouse:
-		AddCommand(buttonCode, command, m_MouseMappings);
-		m_MouseStates[buttonCode] = ButtonState::None;
+		AddCommand(buttonCode, command, m_MouseMappings, id);
+		m_MouseStates[{buttonCode, id}] = ButtonState::None;
 		break;
 	default:
 		break;
@@ -79,39 +79,39 @@ bool MyEngine::InputManager::ProcessSDLEvents() const
 	}
 	return true;
 }
-bool MyEngine::InputManager::IsPressed(const int buttonCode, const Hardware hardWare)
+bool MyEngine::InputManager::IsPressed(const int buttonCode, const Hardware hardWare, int id)
 {
-	return IsButtonState(buttonCode, hardWare, ButtonState::Pressed);
+	return IsButtonState(buttonCode, hardWare, ButtonState::Pressed, id);
 }
 
-bool MyEngine::InputManager::IsReleased(const int buttonCode, const Hardware hardWare)
+bool MyEngine::InputManager::IsReleased(const int buttonCode, const Hardware hardWare, int id)
 {
-	return IsButtonState(buttonCode, hardWare, ButtonState::Released);
+	return IsButtonState(buttonCode, hardWare, ButtonState::Released, id);
 }
 
-bool MyEngine::InputManager::IsDown(const int buttonCode, const Hardware hardWare)
+bool MyEngine::InputManager::IsDown(const int buttonCode, const Hardware hardWare, int id)
 {
-	return IsButtonState(buttonCode, hardWare, ButtonState::Down);
+	return IsButtonState(buttonCode, hardWare, ButtonState::Down, id);
 }
 
-bool MyEngine::InputManager::IsButtonState(const int buttonCode, const Hardware hardware, const ButtonState state)
+bool MyEngine::InputManager::IsButtonState(const int buttonCode, const Hardware hardware, const ButtonState state, int id)
 {
 	switch (hardware)
 	{
 	case MyEngine::Hardware::Keyboard:
-		return m_KeyBoardStates[buttonCode] == state;
+		return m_KeyBoardStates[{buttonCode, id}] == state;
 	case MyEngine::Hardware::Controller:
-		return m_ControllerStates[buttonCode] == state;
+		return m_ControllerStates[{buttonCode, id}] == state;
 	case MyEngine::Hardware::Mouse:
-		return m_MouseStates[buttonCode] == state;
+		return m_MouseStates[{buttonCode, id}] == state;
 	default:
 		return false;
 	}
 }
 
-void MyEngine::InputManager::AddCommand(const int buttonCode, const Command* command, std::map<const int, std::vector<const Command*>>& mappings)
+void MyEngine::InputManager::AddCommand(const int buttonCode, const Command* command, std::map<std::pair<const int, const int>, std::vector<const Command*>>& mappings, int id)
 {
-	for (const Command* pCommand : mappings[buttonCode])
+	for (const Command* pCommand : mappings[{buttonCode, id}])
 	{
 		if (pCommand == command)
 		{
@@ -119,16 +119,16 @@ void MyEngine::InputManager::AddCommand(const int buttonCode, const Command* com
 			return;
 		}
 	}
-	mappings[buttonCode].push_back(command);
+	mappings[{buttonCode, id}].push_back(command);
 }
 
-void MyEngine::InputManager::ExecuteCommand(const Hardware hardware, const std::map<const int, std::vector<const Command*>>& mappings)
+void MyEngine::InputManager::ExecuteCommand(const Hardware hardware, const std::map<std::pair<const int, const int>, std::vector<const Command*>>& mappings)
 {
-	for (const std::pair<const int, std::vector<const Command*>>& pair : mappings)
+	for (const std::pair<std::pair<const int, const int>, std::vector<const Command*>>& pair : mappings)
 	{
 		for (const Command* pCommand : pair.second)
 		{
-			if (IsButtonState(pair.first, hardware, pCommand->State))
+			if (IsButtonState(pair.first.first, hardware, pCommand->State, pair.first.second))
 			{
 				pCommand->Action();
 			}
@@ -143,25 +143,25 @@ void MyEngine::InputManager::UpdateStates(const Hardware hardware)
 	switch (hardware)
 	{
 	case MyEngine::Hardware::Keyboard:
-		for (std::pair<const int, ButtonState>& pair : m_KeyBoardStates)
+		for (std::pair< const std::pair<const int, const int>, ButtonState>& pair : m_KeyBoardStates)
 		{
-			UpdateState(GetKeyState(pair.first) & 0x8000, pair);
+			UpdateState(GetKeyState(pair.first.first) & 0x8000, pair);
 		}
 		break;
 	case MyEngine::Hardware::Controller:
 		pState = new XINPUT_STATE();
-		XInputGetState(1, pState);
-		buttons = pState->Gamepad.wButtons;
-		delete pState;
-		for (std::pair<const int, ButtonState>& pair : m_ControllerStates)
+		for (std::pair< const std::pair<const int, const int>, ButtonState>& pair : m_ControllerStates)
 		{
-			UpdateState(buttons & WORD(pair.first), pair);
+			XInputGetState(pair.first.second, pState);
+			buttons = pState->Gamepad.wButtons;
+			UpdateState(buttons & WORD(pair.first.first), pair);
 		}
+		SafeDelete(pState);
 		break;
 	case MyEngine::Hardware::Mouse:
-		for (std::pair<const int, ButtonState>& pair : m_MouseStates)
+		for (std::pair< const std::pair<const int, const int>, ButtonState>& pair : m_MouseStates)
 		{
-			UpdateState(GetKeyState(pair.first) & 0x80, pair);
+			UpdateState(GetKeyState(pair.first.first) & 0x80, pair);
 		}
 		break;
 	default:
@@ -170,7 +170,7 @@ void MyEngine::InputManager::UpdateStates(const Hardware hardware)
 
 }
 
-void MyEngine::InputManager::UpdateState(const bool down, std::pair<const int, ButtonState>& pair)
+void MyEngine::InputManager::UpdateState(const bool down, std::pair< const std::pair<const int, const int>, ButtonState>& pair)
 {
 	if (down)
 	{

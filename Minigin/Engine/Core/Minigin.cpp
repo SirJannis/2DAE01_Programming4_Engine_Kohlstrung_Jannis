@@ -26,10 +26,10 @@ const float MyEngine::Minigin::SecondsPerFrame = .016f;
 
 void MyEngine::Minigin::Initialize(const std::string& dataPath, const std::string& windowTitle, int windowWidth, int windowHeigth, const float ppm)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
-		
+
 	}
 	Logger::GetInstance()->Init();
 
@@ -41,13 +41,13 @@ void MyEngine::Minigin::Initialize(const std::string& dataPath, const std::strin
 		windowHeigth,
 		SDL_WINDOW_OPENGL
 	);
-	if (m_pWindow == nullptr) 
+	if (m_pWindow == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
 	InputManager::GetInstance()->Init(m_pWindow);
-	Renderer::GetInstance()->Init(m_pWindow, {0,0,0,255});
+	Renderer::GetInstance()->Init(m_pWindow, { 0,0,0,255 });
 	// tell the resource manager where he can find the game data
 	ResourceManager::GetInstance()->Init(dataPath + "Resources/");
 	SoundManager::GetInstance()->Init(dataPath + "Sounds/");
@@ -115,10 +115,6 @@ void MyEngine::Minigin::Cleanup()
 
 void MyEngine::Minigin::Run()
 {
-	//Initialize();
-
-	//LoadGame();
-
 	{
 		Renderer* renderer = Renderer::GetInstance();
 		SceneManager* sceneManager = SceneManager::GetInstance();

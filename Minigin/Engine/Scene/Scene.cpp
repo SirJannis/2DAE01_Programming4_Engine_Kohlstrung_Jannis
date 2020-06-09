@@ -13,8 +13,7 @@ Scene::~Scene()
 {
 	for (GameObject* pObject : m_Objects)
 	{
-		delete pObject;
-		pObject = nullptr;
+		SafeDelete(pObject);
 	}
 }
 

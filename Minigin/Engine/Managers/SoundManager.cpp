@@ -8,9 +8,9 @@
 MyEngine::SoundManager::~SoundManager()
 {
 	for (const SoundEffect* pEffect : m_SoundEffects)
-		delete pEffect;
+		SafeDelete(pEffect);
 	for (const SoundStream* pStream : m_SoundStreams)
-		delete pStream;
+		SafeDelete(pStream);
 }
 
 void MyEngine::SoundManager::Init(const std::string& dataPath)
