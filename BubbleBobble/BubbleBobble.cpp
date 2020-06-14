@@ -38,8 +38,6 @@ void LoadTestScene()
 	go->AddComponent(new RenderComponent(1));
 	go->AddComponent(new TextComponent("Programming 4 Assignment", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 36), { 255,255,255 }));
 	go->GetComponent<RenderComponent>()->AddTexture(go->GetComponent<TextComponent>()->GetTexture());
-	//auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
-	//to->SetPosition(80, 20);
 	scene.Add(go);
 
 	go = new GameObject();
@@ -55,17 +53,18 @@ void LoadTestScene()
 	RenderComponent* pSecondRenderComp = new RenderComponent(1);
 	pSecondRenderComp->AddTexture(ResourceManager::GetInstance()->LoadTexture("logo.png"));
 	go->AddComponent(pSecondRenderComp);
-	go->AddComponent(new PhysicsComponent(PhysicsType::Dynamic,320.f, 250.f, 0.f , 104.f, 32.5f, 10.f));
+	go->AddComponent(new PhysicsComponent(PhysicsType::Dynamic, { 320.f, 250.f }, 0.f, 104.f, 32.5f, 10.f));
 	scene.Add(go);
 
 	Logger::GetInstance()->LogInfo("testInfo");
 	Logger::GetInstance()->LogWarning("testWarning");
 	Logger::GetInstance()->LogError("testError");
 
-	SoundEffect* sound = SoundManager::GetInstance()->LoadSoundEffect("ButtonClick.ogg");
+	SoundManager::GetInstance()->LoadSoundEffect("ButtonClick.ogg", Event(1));
 
-	Command* test = new Command({ [sound]() { Logger::GetInstance()->LogInfo("Executet Test Command!"); sound->Play(0); }, ButtonState::Released });
-	InputManager::GetInstance()->AddCommand(XINPUT_GAMEPAD_A, Hardware::Controller, test, 0);
+	Command* testCommand = new Command({ []() { Logger::GetInstance()->LogInfo("Executet Test Command!"); SoundManager::GetInstance()->Notify(Event(1)); }, ButtonState::Released, "Demo" });
+	InputManager::GetInstance()->AddCommand(XINPUT_GAMEPAD_A, Hardware::Controller, testCommand, 0);
+	InputManager::GetInstance()->AddCommand(VK_LBUTTON, Hardware::Mouse, testCommand, 0);
 
 
 	PhysicsManager::GetInstance()->SetShouldDebugDraw(true);

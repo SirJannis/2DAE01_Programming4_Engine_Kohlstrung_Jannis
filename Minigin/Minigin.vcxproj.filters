@@ -75,9 +75,6 @@
     <ClInclude Include="Engine\Helpers\Observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Helpers\AchievmentSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Components\AnimatedRenderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>

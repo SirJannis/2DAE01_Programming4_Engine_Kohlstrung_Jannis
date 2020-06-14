@@ -15,6 +15,7 @@ Scene::~Scene()
 	{
 		SafeDelete(pObject);
 	}
+	InputManager::GetInstance()->RemoveCommandsByScene(m_Name);
 }
 
 void Scene::Add(GameObject* pObject)

@@ -7,11 +7,11 @@
 #include "SDL_rect.h"
 
 //Don't forget to update this with Rotation / angle when you have it
-MyEngine::PhysicsComponent::PhysicsComponent(const PhysicsType physicsType, const float posX, const float posY, const float angle, const float halfWidth, const float halfHeight, const float density, const float friction, const float restitution, unsigned short categoryBits, unsigned short maskBits)
+MyEngine::PhysicsComponent::PhysicsComponent(const PhysicsType physicsType, const glm::fvec2& pos, const float angle, const float halfWidth, const float halfHeight, const float density, const float friction, const float restitution, unsigned short categoryBits, unsigned short maskBits)
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2BodyType(physicsType);
-	bodyDef.position.Set(posX / PhysicsManager::GetInstance()->GetPPM(), posY / PhysicsManager::GetInstance()->GetPPM());
+	bodyDef.position.Set(pos.x / PhysicsManager::GetInstance()->GetPPM(), pos.y/ PhysicsManager::GetInstance()->GetPPM());
 	bodyDef.angle = angle * float(M_PI) / 180.f;
 	m_pBody = PhysicsManager::GetInstance()->CreateBody(bodyDef);
 
