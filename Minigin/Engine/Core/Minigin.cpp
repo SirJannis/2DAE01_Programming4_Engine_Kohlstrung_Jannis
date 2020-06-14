@@ -15,7 +15,6 @@
 #include "../Managers/PhysicsManager.h"
 
 #if _DEBUG
-// ReSharper disable once CppUnusedIncludeDirective
 #include <vld.h>
 #endif
 
@@ -29,9 +28,8 @@ void MyEngine::Minigin::Initialize(const std::string& dataPath, const std::strin
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
-
 	}
-	Logger::GetInstance()->Init();
+	Logger::Init();
 
 	m_pWindow = SDL_CreateWindow(
 		windowTitle.c_str(),
@@ -64,13 +62,13 @@ void MyEngine::Minigin::LoadGame() const
 
 	GameObject* go = new GameObject();
 	go->AddComponent(new TransformComponent());
-	go->AddComponent(new RenderComponent(1));
+	go->AddComponent(new RenderComponent());
 	go->GetComponent<RenderComponent>()->AddTexture(ResourceManager::GetInstance()->LoadTexture("background.jpg"));
 	scene.Add(go);
 
 	go = new GameObject();
 	go->AddComponent(new TransformComponent({ 216.f, 180.f }));
-	RenderComponent* pRenderComp = new RenderComponent(1);
+	RenderComponent* pRenderComp = new RenderComponent();
 	pRenderComp->AddTexture(ResourceManager::GetInstance()->LoadTexture("logo.png"));
 	go->AddComponent(pRenderComp);
 	scene.Add(go);
@@ -78,24 +76,22 @@ void MyEngine::Minigin::LoadGame() const
 	//Make this a gameobject with proper Components
 	go = new GameObject();
 	go->AddComponent(new TransformComponent({ 80.f, 20.f }));
-	go->AddComponent(new RenderComponent(1));
+	go->AddComponent(new RenderComponent());
 	go->AddComponent(new TextComponent("Programming 4 Assignment", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 36), { 255,255,255 }));
 	go->GetComponent<RenderComponent>()->AddTexture(go->GetComponent<TextComponent>()->GetTexture());
-	//auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
-	//to->SetPosition(80, 20);
 	scene.Add(go);
 
 	go = new GameObject();
 	go->AddComponent(new TransformComponent());
-	go->AddComponent(new RenderComponent(1));
+	go->AddComponent(new RenderComponent());
 	go->AddComponent(new TextComponent(" ", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 18), { 255, 255,0 }));
 	go->GetComponent<RenderComponent>()->AddTexture(go->GetComponent<TextComponent>()->GetTexture());
 	go->AddComponent(new FPSComponent());
 	scene.Add(go);
 
-	Logger::GetInstance()->LogInfo("testInfo");
-	Logger::GetInstance()->LogWarning("testWarning");
-	Logger::GetInstance()->LogError("testError");
+	Logger::LogInfo("testInfo");
+	Logger::LogWarning("testWarning");
+	Logger::LogError("testError");
 }
 
 void MyEngine::Minigin::Cleanup()
@@ -105,7 +101,6 @@ void MyEngine::Minigin::Cleanup()
 	SceneManager::Release();
 	InputManager::Release();
 	ResourceManager::Release();
-	Logger::Release();
 	SoundManager::Release();
 	PhysicsManager::Release();
 	SDL_DestroyWindow(m_pWindow);

@@ -34,31 +34,14 @@ void MyEngine::Renderer::Destroy()
 	}
 }
 
-void MyEngine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
+void MyEngine::Renderer::RenderTexture(const Texture2D& texture, const SDL_Rect* dstRect, const SDL_Rect* srcRect, const float angle, const SDL_Point& pivot, const bool isMirroredHorizontal) const
 {
 	int w;
 	int h;
 	SDL_GetRendererOutputSize(m_Renderer, &w, &h);
-	//Move this rect to Rendercomponent maybe
-	SDL_Rect dst;
-	dst.x = static_cast<int>(x);
-	dst.y = h - static_cast<int>(y);
-	SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
-	//Use SDL_RenderCopyEx
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
-}
+	SDL_Rect destRect{ dstRect->x, h - dstRect->y, dstRect->w, dstRect->h };
+	SDL_RenderCopyEx(m_Renderer, texture.GetSDLTexture(), srcRect, &destRect, angle, &pivot, SDL_RendererFlip(isMirroredHorizontal));
 
-void MyEngine::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
-{
-	int w;
-	int h;
-	SDL_GetRendererOutputSize(m_Renderer, &w, &h);
-	SDL_Rect dst;
-	dst.x = static_cast<int>(x);
-	dst.y = h - static_cast<int>(y);
-	dst.w = static_cast<int>(width);
-	dst.h = static_cast<int>(height);
-	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
 void MyEngine::Renderer::RenderLine(const SDL_Point& p1, const SDL_Point& p2, const SDL_Point& pivot, const SDL_Color& color)

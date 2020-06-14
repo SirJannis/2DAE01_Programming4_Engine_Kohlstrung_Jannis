@@ -14,16 +14,12 @@ namespace MyEngine
 		explicit FixedSizeAllocator(int size, size_t blockSize);
 		~FixedSizeAllocator();
 
-		// Acquire a pointer to a buffer 
 		void* Acquire();
 
-		// Release a buffer
 		void Release(void* release);
 		
-		// Clears Memory Pool
 		void Reset();
 
-		// Get the amount of free memory that is left on the stack.
 		size_t GetFreeSpaceAmount() const;
 		size_t GetUsedSpaceAmount() const;
 

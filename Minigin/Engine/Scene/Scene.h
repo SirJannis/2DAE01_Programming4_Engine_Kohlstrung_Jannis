@@ -4,13 +4,13 @@
 namespace MyEngine
 {
 	class GameObject;
-	class Scene
+	class Scene final
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
+		friend Scene& SceneManager::CreateScene(const std::string& name, bool setactive);
 	public:
 		void Add(GameObject* pObject);
-		//Add scene activated and scene deactivated
-		//Levels unload all other levels known and main menu as well
+
+		const std::string& GetName() { return m_Name; }
 
 		void FixedUpdate(const float fixedDeltaTime);
 		void Update(const float deltaTime);
@@ -27,7 +27,6 @@ namespace MyEngine
 		std::string m_Name;
 		std::vector<GameObject*> m_Objects{};
 
-		static unsigned int m_IdCounter; 
 	};
 
 }

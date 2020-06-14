@@ -20,49 +20,52 @@ void LoadTestScene()
 	Scene& scene = SceneManager::GetInstance()->CreateScene("Demo");
 
 	GameObject* go = new GameObject();
-	go->AddComponent(new TransformComponent({ 0.f , 500.f }));
-	go->AddComponent(new RenderComponent(1));
+	go->AddComponent(new TransformComponent({ 320.f , 250.f }));
+	go->AddComponent(new RenderComponent());
 	go->GetComponent<RenderComponent>()->AddTexture(ResourceManager::GetInstance()->LoadTexture("background.jpg"));
 	scene.Add(go);
 
 	go = new GameObject();
-	go->AddComponent(new TransformComponent({ 216.f, 320.f }));
-	RenderComponent* pRenderComp = new RenderComponent(1);
+	go->AddComponent(new TransformComponent({ 320.f, 250.f }));
+	RenderComponent* pRenderComp = new RenderComponent();
 	pRenderComp->AddTexture(ResourceManager::GetInstance()->LoadTexture("logo.png"));
 	go->AddComponent(pRenderComp);
 	scene.Add(go);
 
-	//Make this a gameobject with proper Components
 	go = new GameObject();
-	go->AddComponent(new TransformComponent({ 80.f, 480.f }));
-	go->AddComponent(new RenderComponent(1));
-	go->AddComponent(new TextComponent("Programming 4 Assignment", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 36), { 255,255,255 }));
-	go->GetComponent<RenderComponent>()->AddTexture(go->GetComponent<TextComponent>()->GetTexture());
+	go->AddComponent(new TransformComponent({ 320.f, 480.f }));
+	go->AddComponent(new TextComponent("Programming 4 Assignment", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 36), { 255,255,255 }, 0.f, {.5f, .5f}));
 	scene.Add(go);
 
 	go = new GameObject();
 	go->AddComponent(new TransformComponent({ 0.f, 500.f }));
-	go->AddComponent(new RenderComponent(1));
-	go->AddComponent(new TextComponent(" ", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 18), { 255, 255,0 }));
-	go->GetComponent<RenderComponent>()->AddTexture(go->GetComponent<TextComponent>()->GetTexture());
+	go->AddComponent(new TextComponent(" ", ResourceManager::GetInstance()->LoadFont("Lingua.otf", 18), { 255, 255,0 }, 0.f, {0.f, 0.f}));
 	go->AddComponent(new FPSComponent());
 	scene.Add(go);
 
 	go = new GameObject();
 	go->AddComponent(new TransformComponent());
-	RenderComponent* pSecondRenderComp = new RenderComponent(1);
+	RenderComponent* pSecondRenderComp = new RenderComponent();
 	pSecondRenderComp->AddTexture(ResourceManager::GetInstance()->LoadTexture("logo.png"));
 	go->AddComponent(pSecondRenderComp);
-	go->AddComponent(new PhysicsComponent(PhysicsType::Dynamic, { 320.f, 250.f }, 0.f, 104.f, 32.5f, 10.f));
+	go->AddComponent(new PhysicsComponent(PhysicsType::Dynamic, { 320.f, 250.f }, 45.f, 104.f, 32.5f, 10.f, 0.3f, 0.0f));
 	scene.Add(go);
 
-	Logger::GetInstance()->LogInfo("testInfo");
-	Logger::GetInstance()->LogWarning("testWarning");
-	Logger::GetInstance()->LogError("testError");
+	go = new GameObject();
+	go->AddComponent(new TransformComponent());
+	RenderComponent* pThirdRenderComp = new RenderComponent();
+	pThirdRenderComp->AddTexture(ResourceManager::GetInstance()->LoadTexture("logo.png"));
+	go->AddComponent(pThirdRenderComp);
+	go->AddComponent(new PhysicsComponent(PhysicsType::Kinematic, { 320.f, 10.f }, 0.f, 104.f, 32.5f, 10.f, 0.3f, 0.0f));
+	scene.Add(go);
+
+	Logger::LogInfo("testInfo");
+	Logger::LogWarning("testWarning");
+	Logger::LogError("testError");
 
 	SoundManager::GetInstance()->LoadSoundEffect("ButtonClick.ogg", Event(1));
 
-	Command* testCommand = new Command({ []() { Logger::GetInstance()->LogInfo("Executet Test Command!"); SoundManager::GetInstance()->Notify(Event(1)); }, ButtonState::Released, "Demo" });
+	Command* testCommand = new Command({ []() { Logger::LogInfo("Executet Test Command!"); SoundManager::GetInstance()->Notify(Event(1)); }, ButtonState::Released, "Demo" });
 	InputManager::GetInstance()->AddCommand(XINPUT_GAMEPAD_A, Hardware::Controller, testCommand, 0);
 	InputManager::GetInstance()->AddCommand(VK_LBUTTON, Hardware::Mouse, testCommand, 0);
 

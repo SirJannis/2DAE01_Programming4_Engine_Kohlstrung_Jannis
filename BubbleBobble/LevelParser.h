@@ -22,26 +22,26 @@ public:
 
 		if (!std::regex_match(levelPath, fileTypeRegex))
 		{
-			Logger::GetInstance()->LogError("LevelData file is not a .dat file!");
+			Logger::LogError("LevelData file is not a .dat file!");
 			return;
 		}
 
 		if (!std::regex_match(enemyPath, fileTypeRegex))
 		{
-			Logger::GetInstance()->LogError("EnemyData file is not a .dat file!");
+			Logger::LogError("EnemyData file is not a .dat file!");
 			return;
 		}
 
 		levelFile.open(levelPath, std::ios::binary);
 		if (!levelFile.is_open())
 		{
-			Logger::GetInstance()->LogError("File [" + levelPath + "] could not be opened!");
+			Logger::LogError("File [" + levelPath + "] could not be opened!");
 			return;
 		}
 		enemyFile.open(enemyPath, std::ios::binary);
 		if (!levelFile.is_open())
 		{
-			Logger::GetInstance()->LogError("File [" + enemyPath + "] could not be opened!");
+			Logger::LogError("File [" + enemyPath + "] could not be opened!");
 			return;
 		}
 		for (int levelCounter{};levelCounter <100;levelCounter++)

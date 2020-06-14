@@ -53,15 +53,3 @@ void MyEngine::GameObject::AddComponent(BaseComponent* pComponent)
 	m_Components.push_back(pComponent);
 	pComponent->SetGameObject(this);
 }
-
-//template <class T>
-//T* MyEngine::GameObject::GetComponent()
-//{
-//	const type_info& ti = typeid(T);
-//	for (BaseComponent* pComp : m_Components)
-//	{
-//		if (pComp && typeid(*pComp) == ti)
-//			return static_cast<T*>(pComp);
-//	}
-//	return nullptr;
-//}

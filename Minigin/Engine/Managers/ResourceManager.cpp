@@ -8,6 +8,18 @@
 #include "../Graphics/Texture2D.h"
 #include "../Graphics/Font.h"
 
+MyEngine::ResourceManager::~ResourceManager()
+{
+	for (Texture2D* pTexture : m_Textures)
+	{
+		SafeDelete(pTexture);
+	}
+	for (Font* pFont : m_Fonts)
+	{
+		SafeDelete(pFont);
+	}
+}
+
 void MyEngine::ResourceManager::Init(const std::string& dataPath)
 {
 	m_DataPath = dataPath;
@@ -30,18 +42,34 @@ void MyEngine::ResourceManager::Init(const std::string& dataPath)
 	}
 }
 
-MyEngine::Texture2D* MyEngine::ResourceManager::LoadTexture(const std::string& file) const
+MyEngine::Texture2D* MyEngine::ResourceManager::LoadTexture(const std::string& file)
 {
 	const auto fullPath = m_DataPath + file;
+	for (Texture2D* pTexture : m_Textures)
+	{
+		if (pTexture->GetPath() == fullPath)
+			return pTexture;
+	}
 	auto texture = IMG_LoadTexture(Renderer::GetInstance()->GetSDLRenderer(), fullPath.c_str());
 	if (texture == nullptr) 
 	{
 		throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
 	}
-	return new Texture2D(texture);
+	Texture2D* retText = new Texture2D(texture);
+	retText->SetPath(fullPath);
+	m_Textures.push_back(retText);
+	return retText;
 }
 
-MyEngine::Font* MyEngine::ResourceManager::LoadFont(const std::string& file, unsigned int size) const
+MyEngine::Font* MyEngine::ResourceManager::LoadFont(const std::string& file, unsigned int size)
 {
-	return new Font(m_DataPath + file, size);
+	const auto fullPath = m_DataPath + file;
+	for (Font* pFont : m_Fonts)
+	{
+		if (pFont->GetPath() == fullPath)
+			return pFont;
+	}
+	Font* pRetFont = new Font(fullPath, size);
+	m_Fonts.push_back(pRetFont);
+	return pRetFont;
 }

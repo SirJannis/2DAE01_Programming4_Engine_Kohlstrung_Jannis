@@ -13,6 +13,7 @@ MyEngine::Font::Font(const std::string& fullPath, unsigned int size) : m_Font(nu
 	{
 		throw std::runtime_error(std::string("Failed to load font: ") + SDL_GetError());
 	}
+	m_Path = fullPath;
 }
 
 MyEngine::Font::~Font()

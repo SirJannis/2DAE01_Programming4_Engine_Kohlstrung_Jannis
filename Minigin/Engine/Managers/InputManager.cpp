@@ -11,6 +11,10 @@ MyEngine::InputManager::~InputManager()
 	DeleteMappings(m_ControllerMappings);
 	DeleteMappings(m_KeyBoardMappings);
 	DeleteMappings(m_MouseMappings);
+
+	m_ControllerMappings.clear();
+	m_KeyBoardMappings.clear();
+	m_MouseMappings.clear();
 }
 
 void MyEngine::InputManager::Init(SDL_Window* pWindow)
@@ -120,7 +124,7 @@ void MyEngine::InputManager::AddCommand(const int buttonCode, Command* command, 
 	{
 		if (pCommand == command)
 		{
-			Logger::GetInstance()->LogWarning("Command already added to button(created memory leak).");
+			Logger::LogWarning("Command already added to button(created memory leak).");
 			return;
 		}
 	}

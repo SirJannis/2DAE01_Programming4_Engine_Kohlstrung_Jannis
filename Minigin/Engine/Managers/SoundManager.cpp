@@ -24,7 +24,7 @@ void MyEngine::SoundManager::Init(const std::string& dataPath)
 {
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
-		Logger::GetInstance()->LogError("Core::Initialize( ), error when calling Mix_OpenAudio: " + std::string(Mix_GetError()));
+		Logger::LogError("Core::Initialize( ), error when calling Mix_OpenAudio: " + std::string(Mix_GetError()));
 		return;
 	}
 	m_DataPath = dataPath;

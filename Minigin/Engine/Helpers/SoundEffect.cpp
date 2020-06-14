@@ -11,7 +11,7 @@ MyEngine::SoundEffect::SoundEffect(const std::string& path )
 	if ( m_pMixChunk == nullptr )
 	{
 		std::string errorMsg = "SoundEffect: Failed to load " + path + ",\nSDL_mixer Error: " + Mix_GetError( );
-		Logger::GetInstance()->LogError(errorMsg);
+		Logger::LogError(errorMsg);
 	}
 }
 MyEngine::SoundEffect::~SoundEffect( )
@@ -27,9 +27,6 @@ bool MyEngine::SoundEffect::IsLoaded( ) const
 
 bool MyEngine::SoundEffect::Play( int loops )
 {
-	// Don't save the channel as a data member, 
-	// because when it stops playing the channel becomes free
-	// and available for usage by other effects
 	if ( m_pMixChunk != nullptr )
 	{
 		m_Channel = Mix_PlayChannel( -1, m_pMixChunk, loops );

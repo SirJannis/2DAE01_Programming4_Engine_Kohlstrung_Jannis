@@ -6,7 +6,6 @@
 #include "../Graphics/Renderer.h"
 #include "SDL_rect.h"
 
-//Don't forget to update this with Rotation / angle when you have it
 MyEngine::PhysicsComponent::PhysicsComponent(const PhysicsType physicsType, const glm::fvec2& pos, const float angle, const float halfWidth, const float halfHeight, const float density, const float friction, const float restitution, unsigned short categoryBits, unsigned short maskBits)
 {
 	b2BodyDef bodyDef;
@@ -54,6 +53,7 @@ void MyEngine::PhysicsComponent::Render() const
 	}
 
 	Renderer::GetInstance()->RenderLine({ int(m_pBody->GetWorldPoint(shape->m_vertices[0]).x * PhysicsManager::GetInstance()->GetPPM()), int(m_pBody->GetWorldPoint(shape->m_vertices[0]).y * PhysicsManager::GetInstance()->GetPPM()) }, { int(m_pBody->GetWorldPoint(shape->m_vertices[shape->m_count - 1]).x * PhysicsManager::GetInstance()->GetPPM()),int(m_pBody->GetWorldPoint(shape->m_vertices[shape->m_count - 1]).y * PhysicsManager::GetInstance()->GetPPM()) }, { int(m_pBody->GetPosition().x * PhysicsManager::GetInstance()->GetPPM()), int(m_pBody->GetPosition().y * PhysicsManager::GetInstance()->GetPPM()) }, PhysicsManager::GetInstance()->GetDebugColor());
+
 }
 
 bool MyEngine::PhysicsComponent::IsOverlapping(const PhysicsComponent* other) const

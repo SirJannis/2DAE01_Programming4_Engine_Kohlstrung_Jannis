@@ -5,8 +5,6 @@
 
 using namespace MyEngine;
 
-unsigned int Scene::m_IdCounter = 0;
-
 Scene::Scene(const std::string& name) : m_Name(name) {}
 
 Scene::~Scene() 
@@ -15,7 +13,7 @@ Scene::~Scene()
 	{
 		SafeDelete(pObject);
 	}
-	InputManager::GetInstance()->RemoveCommandsByScene(m_Name);
+	
 }
 
 void Scene::Add(GameObject* pObject)
@@ -23,7 +21,7 @@ void Scene::Add(GameObject* pObject)
 	m_Objects.push_back(pObject);
 }
 
-void MyEngine::Scene::FixedUpdate(const float fixedDeltaTime)
+void Scene::FixedUpdate(const float fixedDeltaTime)
 {
 	for (GameObject* pObject : m_Objects)
 	{

@@ -4,8 +4,6 @@
 
 namespace MyEngine
 {
-	//Give this Rotation & second position set to take a glm::fvec2&
-	//then implement rotation in rendercomponent & textcomponent
 	class TransformComponent final : public BaseComponent
 	{
 	public:

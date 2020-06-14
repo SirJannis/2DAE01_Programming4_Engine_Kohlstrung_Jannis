@@ -20,5 +20,6 @@ SDL_Texture* MyEngine::Texture2D::GetSDLTexture() const
 
 MyEngine::Texture2D::Texture2D(SDL_Texture* texture)
 {
+	SDL_DestroyTexture(m_Texture);
 	m_Texture = texture;
 }

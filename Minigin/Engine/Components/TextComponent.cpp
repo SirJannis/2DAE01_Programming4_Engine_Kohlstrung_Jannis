@@ -10,6 +10,7 @@
 #include "../Graphics/Texture2D.h"
 #include "../Scene/GameObject.h"
 #include "RenderComponent.h"
+#include "TransformComponent.h"
 
 void MyEngine::TextComponent::FixedUpdate(const float fixedDeltaTime)
 {
@@ -39,10 +40,17 @@ void MyEngine::TextComponent::Update(const float deltaTime)
 
 void MyEngine::TextComponent::Render() const
 {
+	glm::vec2 pos{ m_pGameObject->GetComponent<TransformComponent>()->GetPosition() };
+	SDL_Rect dstRect{ static_cast<int>(pos.x), static_cast<int>(pos.y) };
+	SDL_QueryTexture(m_pTexture->GetSDLTexture(), nullptr, nullptr, &dstRect.w, &dstRect.h);
+	SDL_Point pivot = { int(m_Pivot.x * dstRect.w), int(m_Pivot.y * dstRect.h) };
+	dstRect.x += -pivot.x + int(m_Offset.x);
+	dstRect.y += pivot.y + int(m_Offset.y);
+	Renderer::GetInstance()->RenderTexture(*m_pTexture, &dstRect, nullptr, m_pGameObject->GetComponent<TransformComponent>()->GetRotation() +m_Angle, pivot, false);
 }
 
-MyEngine::TextComponent::TextComponent(const std::string& text, Font* pFont, SDL_Color color)
-	: m_NeedsUpdate(true), m_Text(text), m_pFont(pFont), m_pTexture(nullptr), m_Color(color)
+MyEngine::TextComponent::TextComponent(const std::string& text, Font* pFont, SDL_Color color, const float angle, const glm::fvec2 pivot, const glm::fvec2 offset)
+	: m_NeedsUpdate(true), m_Text(text), m_pFont(pFont), m_pTexture(nullptr), m_Color(color), m_Angle{angle}, m_Pivot{pivot}, m_Offset{offset}
 {
 	const auto surf = TTF_RenderText_Blended(m_pFont->GetFont(), m_Text.c_str(), color);
 	if (surf == nullptr)
@@ -61,8 +69,9 @@ MyEngine::TextComponent::TextComponent(const std::string& text, Font* pFont, SDL
 
 MyEngine::TextComponent::~TextComponent()
 {
-	SafeDelete(m_pFont);
+	SafeDelete(m_pTexture);
 }
+
 
 void MyEngine::TextComponent::SetText(const std::string& text)
 {

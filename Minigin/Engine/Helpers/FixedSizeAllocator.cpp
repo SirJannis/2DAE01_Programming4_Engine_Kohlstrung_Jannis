@@ -6,7 +6,6 @@
 MyEngine::FixedSizeAllocator::FixedSizeAllocator(const int size, size_t blockSize)
 	:m_BlockSize{blockSize}
 {
-	// Initialize
 	m_pMemoryPool.resize(size);
 	m_IsUsed.resize(size);
 	for (size_t i{}; i < m_pMemoryPool.size(); i++)
@@ -18,14 +17,12 @@ MyEngine::FixedSizeAllocator::FixedSizeAllocator(const int size, size_t blockSiz
 
 MyEngine::FixedSizeAllocator::~FixedSizeAllocator()
 {
-	// Destroy
 	for (size_t i{}; i < m_pMemoryPool.size(); i++)
 		free(m_pMemoryPool[i]);
 }
 
 void* MyEngine::FixedSizeAllocator::Acquire()
 {
-	// return a pointer to a buffer of requested size
 	for (size_t i{}; i < m_pMemoryPool.size(); i++)
 	{
 		if (!m_IsUsed[i])
@@ -39,7 +36,6 @@ void* MyEngine::FixedSizeAllocator::Acquire()
 
 void MyEngine::FixedSizeAllocator::Release(void* release)
 {
-	// we do not release in a stacked allocator. why?
 
 	for (size_t i{}; i < m_pMemoryPool.size(); i++)
 	{
@@ -57,7 +53,6 @@ void MyEngine::FixedSizeAllocator::Reset()
 
 size_t MyEngine::FixedSizeAllocator::GetFreeSpaceAmount() const
 {
-	// return the amount of memory that is still free for use.
 	size_t counter{};
 	for (size_t i{}; i < m_IsUsed.size(); i++)
 	{

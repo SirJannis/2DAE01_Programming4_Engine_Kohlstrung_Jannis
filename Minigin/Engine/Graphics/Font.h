@@ -15,9 +15,11 @@ namespace MyEngine
 
 		Font(const Font &) = delete;
 		Font(Font &&) = delete;
+		const std::string& GetPath()const { return m_Path; }
 		Font & operator= (const Font &) = delete;
 		Font & operator= (const Font &&) = delete;
 	private:
+		std::string m_Path;
 		_TTF_Font* m_Font;
 		unsigned int m_Size;
 	};

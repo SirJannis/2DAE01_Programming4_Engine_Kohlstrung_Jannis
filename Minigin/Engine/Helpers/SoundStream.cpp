@@ -11,7 +11,7 @@ MyEngine::SoundStream::SoundStream( const std::string& path )
 	if ( m_pMixMusic == nullptr )
 	{
 		std::string errorMsg = "SoundStream: Failed to load " + path + ",\nSDL_mixer Error: " + Mix_GetError( );
-		Logger::GetInstance()->LogError(errorMsg);
+		Logger::LogError(errorMsg);
 	}
 }
 
